@@ -11,24 +11,20 @@ import { Profile } from './components/Profile';
 import { GameModal } from './components/GameModal';
 import { Game } from './lib/supabase';
 
-function LoadingSpinner() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-      <div className="animate-pulse">
-        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl mb-4"></div>
-        <p className="text-slate-400">Loading...</p>
-      </div>
-    </div>
-  );
-}
-
 function AppContent() {
   const { user, loading } = useAuth();
   const [currentView, setCurrentView] = useState('games');
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="animate-pulse">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl mb-4"></div>
+          <p className="text-slate-400">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!user) {
@@ -37,6 +33,13 @@ function AppContent() {
 
   const renderView = () => {
     switch (currentView) {
+      case 'games':
+        return (
+          <>
+            <Hero onPlayGame={setSelectedGame} />
+            <GamesView onPlayGame={setSelectedGame} />
+          </>
+        );
       case 'leaderboard':
         return <Leaderboard />;
       case 'community':
@@ -45,7 +48,6 @@ function AppContent() {
         return <Achievements />;
       case 'profile':
         return <Profile />;
-      case 'games':
       default:
         return (
           <>
